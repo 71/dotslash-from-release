@@ -1,0 +1,98 @@
+#!/usr/bin/env dotslash
+
+// https://github.com/protocolbuffers/protobuf/releases/tag/v28.2
+{
+  "name": "protoc",
+  "platforms": {
+    "linux-aarch64": {
+      "size": 3218760,
+      "hash": "blake3",
+      "digest": "89ebfb8f46237be600c2513068fa813e9d7ff50b7e590d0d45766227196e95ea",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/protocolbuffers/protobuf/releases/download/v28.2/protoc-28.2-linux-aarch_64.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "protocolbuffers/protobuf",
+          "tag": "v28.2",
+          "name": "protoc-28.2-linux-aarch_64.zip"
+        }
+      ],
+      "path": "bin/protoc"
+    },
+    "linux-x86_64": {
+      "size": 3238072,
+      "hash": "blake3",
+      "digest": "1216ebf02bc57163ce32b794c21fd6e5e3bacc610e20cb5139513171306273fb",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/protocolbuffers/protobuf/releases/download/v28.2/protoc-28.2-linux-x86_64.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "protocolbuffers/protobuf",
+          "tag": "v28.2",
+          "name": "protoc-28.2-linux-x86_64.zip"
+        }
+      ],
+      "path": "bin/protoc"
+    },
+    "macos-aarch64": {
+      "size": 4512286,
+      "hash": "blake3",
+      "digest": "e65675c7690923c223d6dccb1aabf53d5f33a888ba6a4d9e9d9a99b900f72f77",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/protocolbuffers/protobuf/releases/download/v28.2/protoc-28.2-osx-universal_binary.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "protocolbuffers/protobuf",
+          "tag": "v28.2",
+          "name": "protoc-28.2-osx-universal_binary.zip"
+        }
+      ],
+      "path": "bin/protoc"
+    },
+    "macos-x86_64": {
+      "size": 2317801,
+      "hash": "blake3",
+      "digest": "bb6218ee8441b5526e11a856205527ca5ed8c675bd9ab1ebf975e52289609567",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/protocolbuffers/protobuf/releases/download/v28.2/protoc-28.2-osx-x86_64.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "protocolbuffers/protobuf",
+          "tag": "v28.2",
+          "name": "protoc-28.2-osx-x86_64.zip"
+        }
+      ],
+      "path": "bin/protoc"
+    },
+    "windows-x86_64": {
+      "size": 3130943,
+      "hash": "blake3",
+      "digest": "67b65c621eb3f3398b63cdc07643dbf8ff9c305bd23b74ea91b6e7bc53585987",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/protocolbuffers/protobuf/releases/download/v28.2/protoc-28.2-win64.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "protocolbuffers/protobuf",
+          "tag": "v28.2",
+          "name": "protoc-28.2-win64.zip"
+        }
+      ],
+      "path": "bin/protoc.exe"
+    }
+  }
+}

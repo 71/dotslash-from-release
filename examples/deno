@@ -1,0 +1,98 @@
+#!/usr/bin/env dotslash
+
+// https://github.com/denoland/deno/releases/tag/v1.46.3
+{
+  "name": "deno",
+  "platforms": {
+    "macos-aarch64": {
+      "size": 42377654,
+      "hash": "blake3",
+      "digest": "e37b37b0efdc9b04c8fe09dd130cec4073e41e198a33a91e6cbc896371e4ded1",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/denoland/deno/releases/download/v1.46.3/deno-aarch64-apple-darwin.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "denoland/deno",
+          "tag": "v1.46.3",
+          "name": "deno-aarch64-apple-darwin.zip"
+        }
+      ],
+      "path": "deno"
+    },
+    "linux-aarch64": {
+      "size": 51654988,
+      "hash": "blake3",
+      "digest": "c92c1eca3225a5c3382898ec3b3b851701a531ec2153075b8eeadd1021eb5bfa",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/denoland/deno/releases/download/v1.46.3/deno-aarch64-unknown-linux-gnu.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "denoland/deno",
+          "tag": "v1.46.3",
+          "name": "deno-aarch64-unknown-linux-gnu.zip"
+        }
+      ],
+      "path": "deno"
+    },
+    "macos-x86_64": {
+      "size": 43844272,
+      "hash": "blake3",
+      "digest": "85952bcb49ef751561686859d43496d629405070e75984331e13f4335beb6c38",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/denoland/deno/releases/download/v1.46.3/deno-x86_64-apple-darwin.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "denoland/deno",
+          "tag": "v1.46.3",
+          "name": "deno-x86_64-apple-darwin.zip"
+        }
+      ],
+      "path": "deno"
+    },
+    "windows-x86_64": {
+      "size": 42072300,
+      "hash": "blake3",
+      "digest": "e57c9bfdb1808edf0d299826610a5f5c87e45e74830580670abc2f236d90c6a7",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/denoland/deno/releases/download/v1.46.3/deno-x86_64-pc-windows-msvc.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "denoland/deno",
+          "tag": "v1.46.3",
+          "name": "deno-x86_64-pc-windows-msvc.zip"
+        }
+      ],
+      "path": "deno.exe"
+    },
+    "linux-x86_64": {
+      "size": 49337647,
+      "hash": "blake3",
+      "digest": "c0681cff07fe8d4ec2dc09cf09331445f7d5115209bb17ee9eedb24003358a06",
+      "format": "zip",
+      "providers": [
+        {
+          "url": "https://github.com/denoland/deno/releases/download/v1.46.3/deno-x86_64-unknown-linux-gnu.zip"
+        },
+        {
+          "type": "github-release",
+          "repo": "denoland/deno",
+          "tag": "v1.46.3",
+          "name": "deno-x86_64-unknown-linux-gnu.zip"
+        }
+      ],
+      "path": "deno"
+    }
+  }
+}
