@@ -24,6 +24,19 @@ with `./main.ts`.
     https://github.com/71/dotslash-from-release/raw/refs/heads/main/main.ts
   ```
 
+- Use `dotslash` to run Deno without installing it:
+  ```sh
+  $ DENO_DIR=/tmp/deno-cache                                                                             \
+    dotslash <(curl -fsSL https://github.com/71/dotslash-from-release/raw/refs/heads/main/examples/deno) \
+    run --allow-net=github.com,api.github.com,objects.githubusercontent.com                              \
+    https://github.com/71/dotslash-from-release/raw/refs/heads/main/main.ts
+  ```
+
+  You can then clean up with:
+  ```sh
+  $ rm -rf /tmp/deno-cache/
+  ```
+
 </details>
 
 Examples:
