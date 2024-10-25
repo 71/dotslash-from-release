@@ -49,17 +49,18 @@ const artifactFormats: Record<
 };
 
 const artifactRe = (function () {
-  const nameRe = /(?<name>\w+)/.source;
-  const versionRe = /(?<version>\d+(\.\d+)+(\.[a-z]+\d+)?)/.source;
-  const osRe = `(?<os>${Object.keys(osNames).join("|")})`;
-  const archRe = `(?<arch>${Object.keys(archNames).join("|")})`;
+  const nameRe = /(?<name>[\w-]+)/.source;
+  const versionRe = /(?<version>\d+(\.\d+)+([-.][a-z]+[-.]?\d+)?)/.source;
+  const osRe = (id: number) => `(?<os${id}>${Object.keys(osNames).join("|")})`;
+  const archRe = (id: number) =>
+    `(?<arch${id}>${Object.keys(archNames).join("|")})`;
   const additionalPlatformsRe = `(?<platform>${
     Object.keys(additionalPlatforms).join("|")
   })`;
   const formatRe = `(?<format>${Object.values(artifactFormats).join("|")})`;
 
-  const osArchRe = `${osRe}-${archRe}`;
-  const archOsRe = `${archRe}-${osRe}`;
+  const osArchRe = `${osRe(1)}-${archRe(1)}`;
+  const archOsRe = `${archRe(2)}-${osRe(2)}`;
   const platformRe = `(${osArchRe}|${archOsRe}|${additionalPlatformsRe})`;
 
   return new RegExp(
@@ -90,7 +91,10 @@ export function parseAssetName(fileName: string): AssetInfo {
     return { name };
   }
 
-  const { name, version, os, arch, platform, format } = match.groups!;
+  const { name, version, os1, os2, arch1, arch2, platform, format } = match
+    .groups!;
+  const os = os1 ?? os2;
+  const arch = arch1 ?? arch2;
   const result: AssetInfo = {
     name,
     platform: platform === undefined
@@ -149,6 +153,14 @@ Deno.test("parseArtifactName", async () => {
     name: "protoc",
     version: "28.2",
     platform: "windows-x86_64",
+    format: "zip",
+  });
+
+  // https://github.com/protocolbuffers/protobuf/releases/tag/v29.0-rc2
+  assertArtifactParsed("protoc-29.0-rc-2-linux-x86_64.zip", {
+    name: "protoc",
+    version: "29.0-rc-2",
+    platform: "linux-x86_64",
     format: "zip",
   });
 
@@ -296,5 +308,12 @@ Deno.test("parseArtifactName", async () => {
     version: "14.1.1",
     platform: "linux-x86_64",
     format: "tar.gz",
+  });
+
+  // https://github.com/cameron-martin/bazel-lsp/releases/tag/v0.6.1
+  assertArtifactParsed("bazel-lsp-0.6.1-osx-arm64", {
+    name: "bazel-lsp",
+    version: "0.6.1",
+    platform: "macos-aarch64",
   });
 });

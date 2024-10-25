@@ -536,7 +536,7 @@ function releaseFromArgs(args: readonly [string, string?, string?]): Release {
   switch (args.length) {
     case 1: {
       const match =
-        /^(https:\/\/)?github.com\/(?<owner>\w+)\/(?<repo>\w+)(\/releases\/(latest|tag\/(?<tag>.+)))?$/
+        /^(https:\/\/)?github.com\/(?<owner>[\w-]+)\/(?<repo>[\w-]+)(\/releases\/(latest|tag\/(?<tag>.+)))?$/
           .exec(args[0]);
 
       if (match === null) {
