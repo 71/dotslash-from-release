@@ -52,7 +52,7 @@ export const oses = Object.keys(
   } satisfies Record<Os, void>,
 ) as readonly Os[];
 
-export const archs = Object.keys(
+export const architectures = Object.keys(
   {
     "aarch64": void 0,
     "x86_64": void 0,

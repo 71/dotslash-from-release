@@ -11,7 +11,7 @@ import { MultiProgressBar } from "jsr:@deno-library/progress@1.4.9";
 import { type AssetInfo, parseAssetName } from "./lib/artifact-name.ts";
 import { downloadArtifact } from "./lib/download-artifact.ts";
 import {
-  archs,
+  architectures,
   type DotslashArtifact,
   type DotslashFile,
   dotslashHeader,
@@ -24,7 +24,7 @@ import {
 /** A string which selects a set of platforms. */
 const platformSelector = [
   "all" as const,
-  ...archs,
+  ...architectures,
   ...oses,
   ...platforms,
 ];
@@ -71,6 +71,10 @@ const command = new Command()
       required: true,
     },
   )
+  .option(
+    "-o, --output <output:file>",
+    "Write to executable file instead of stdout.",
+  )
   //
   .group("Display options")
   .option("--no-progress", "Do not show progress bars.");
@@ -81,8 +85,13 @@ type Options = ReturnType<typeof command.parse> extends
 
 if (import.meta.main) {
   const { args, options } = await command.parse(Deno.args);
+  const output = await makeDotslashFile(releaseFromArgs(args), options);
 
-  console.log(await makeDotslashFile(releaseFromArgs(args), options));
+  if (options.output !== undefined) {
+    await Deno.writeTextFile(options.output, output + "\n", { mode: 0o777 });
+  } else {
+    console.log(output);
+  }
 }
 
 /**
@@ -281,7 +290,7 @@ function selectPlatforms(
       case "linux":
       case "macos":
       case "windows":
-        for (const arch of archs) {
+        for (const arch of architectures) {
           supportedPlatforms.add(`${platform}-${arch}`);
         }
         break;

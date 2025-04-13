@@ -50,7 +50,7 @@ const artifactFormats: Record<
 
 const artifactRe = (function () {
   const nameRe = /(?<name>[\w-]+)/.source;
-  const versionRe = /(?<version>\d+(\.\d+)+([-.][a-z]+[-.]?\d+)?)/.source;
+  const versionRe = /v?(?<version>\d+(\.\d+)+([-.][a-z]+[-.]?\d+)?)/.source;
   const osRe = (id: number) => `(?<os${id}>${Object.keys(osNames).join("|")})`;
   const archRe = (id: number) =>
     `(?<arch${id}>${Object.keys(archNames).join("|")})`;
@@ -59,12 +59,12 @@ const artifactRe = (function () {
   })`;
   const formatRe = `(?<format>${Object.values(artifactFormats).join("|")})`;
 
-  const osArchRe = `${osRe(1)}-${archRe(1)}`;
-  const archOsRe = `${archRe(2)}-${osRe(2)}`;
+  const osArchRe = `${osRe(1)}[-_]${archRe(1)}`;
+  const archOsRe = `${archRe(2)}[-_]${osRe(2)}`;
   const platformRe = `(${osArchRe}|${archOsRe}|${additionalPlatformsRe})`;
 
   return new RegExp(
-    `^${nameRe}(-${versionRe})?-${platformRe}(\\.exe)?(\\.${formatRe})?$`,
+    `^${nameRe}([-_]${versionRe})?[-_]${platformRe}(\\.exe)?(\\.${formatRe})?$`,
   );
 })();
 
@@ -111,6 +111,8 @@ export function parseAssetName(fileName: string): AssetInfo {
 
   return result;
 }
+
+// spell-checker: disable
 
 Deno.test("parseArtifactName", async () => {
   const { assertEquals } = await import("jsr:@std/assert@1.0.6/equals");
@@ -315,5 +317,39 @@ Deno.test("parseArtifactName", async () => {
     name: "bazel-lsp",
     version: "0.6.1",
     platform: "macos-aarch64",
+  });
+
+  // https://github.com/bazelbuild/bazel-watcher/releases/tag/v0.25.3
+  assertArtifactParsed("ibazel_darwin_arm64", {
+    name: "ibazel",
+    platform: "macos-aarch64",
+  });
+  assertArtifactParsed("ibazel_linux_amd64", {
+    name: "ibazel",
+    platform: "linux-x86_64",
+  });
+  assertArtifactParsed("ibazel_windows_amd64.exe", {
+    name: "ibazel",
+    platform: "windows-x86_64",
+  });
+
+  // https://github.com/sharkdp/bat/releases/tag/v0.25.0
+  assertArtifactParsed("bat-v0.25.0-aarch64-apple-darwin.tar.gz", {
+    name: "bat",
+    version: "0.25.0",
+    platform: "macos-aarch64",
+    format: "tar.gz",
+  });
+  assertArtifactParsed("bat-v0.25.0-aarch64-unknown-linux-musl.tar.gz", {
+    name: "bat",
+    version: "0.25.0",
+    platform: "linux-aarch64",
+    format: "tar.gz",
+  });
+  assertArtifactParsed("bat-v0.25.0-x86_64-unknown-linux-gnu.tar.gz", {
+    name: "bat",
+    version: "0.25.0",
+    platform: "linux-x86_64",
+    format: "tar.gz",
   });
 });

@@ -107,6 +107,7 @@ export async function downloadArtifact(
 async function readTarFileNames(
   stream: ReadableStream<Uint8Array>,
 ): Promise<string[]> {
+  // spell-checker: ignore Untar
   const { UntarStream } = await import("jsr:@std/tar@0.1.1");
   const entries: string[] = [];
 
@@ -128,6 +129,8 @@ async function readTarFileNames(
 
   return entries;
 }
+
+// spell-checker: disable
 
 Deno.test("downloadArtifact", async () => {
   const { assertEquals } = await import("jsr:@std/assert@1.0.6/equals");

@@ -1,3 +1,10 @@
 {
-  "deno.enable": true
+  "deno.enable": true,
+  "cSpell.words": [
+    "aarch",
+    "denoland",
+    "dotslash",
+    "msvc",
+    "protoc"
+  ]
 }
