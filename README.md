@@ -92,3 +92,12 @@ libprotoc 28.2
 $ examples/rg --version | head -1
 ripgrep 14.1.1 (rev 4649aa9700)
 ```
+
+## Installation
+
+If you want to install `dotslash-from-release` instead of using it with
+`deno run`, run the following:
+
+```sh
+deno install --global --allow-net --allow-write https://github.com/71/dotslash-from-release/raw/refs/heads/main/main.ts --name dotslash-from-release
+```

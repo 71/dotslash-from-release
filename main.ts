@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-net=github.com,api.github.com,objects.githubusercontent.com
+#!/usr/bin/env -S deno run --allow-net=github.com,api.github.com,objects.githubusercontent.com --allow-write
 import { Command, EnumType } from "jsr:@cliffy/command@1.0.0-rc.7";
 import {
   Checkbox,
@@ -7,6 +7,7 @@ import {
   Select,
 } from "jsr:@cliffy/prompt@1.0.0-rc.7";
 import { MultiProgressBar } from "jsr:@deno-library/progress@1.4.9";
+import { join } from "node:path";
 
 import { type AssetInfo, parseAssetName } from "./lib/artifact-name.ts";
 import { downloadArtifact } from "./lib/download-artifact.ts";
@@ -85,12 +86,31 @@ type Options = ReturnType<typeof command.parse> extends
 
 if (import.meta.main) {
   const { args, options } = await command.parse(Deno.args);
-  const output = await makeDotslashFile(releaseFromArgs(args), options);
+  const { program, contents } = await makeDotslashFile(
+    releaseFromArgs(args),
+    options,
+  );
 
   if (options.output !== undefined) {
-    await Deno.writeTextFile(options.output, output + "\n", { mode: 0o777 });
+    try {
+      await Deno.writeTextFile(options.output, contents + "\n", {
+        mode: 0o777,
+      });
+    } catch (e) {
+      // TODO(https://github.com/denoland/deno/issues/28873): use
+      // `e instanceof Deno.errors.IsADirectory` instead.
+      if (
+        !(e instanceof Error) ||
+        !e.message.startsWith("Is a directory (os error 21)")
+      ) {
+        throw e;
+      }
+      await Deno.writeTextFile(join(options.output, program), contents + "\n", {
+        mode: 0o777,
+      });
+    }
   } else {
-    console.log(output);
+    console.log(contents);
   }
 }
 
@@ -112,7 +132,7 @@ interface Release {
 async function makeDotslashFile(
   release: Release,
   options: Options,
-): Promise<string> {
+): Promise<{ program: string; contents: string }> {
   /** Writer used for {@linkcode Confirm} and other prompts. */
   const writer = { writeSync: Deno.stderr.writeSync.bind(Deno.stderr) };
 
@@ -178,13 +198,14 @@ async function makeDotslashFile(
   });
 
   const file = await createDotslashFile(program, artifacts, writer);
-
-  return `
+  const contents = `
 ${dotslashHeader}
 
 // ${releaseUrl}
 ${JSON.stringify(file, undefined, 2)}
   `.trim();
+
+  return { program, contents };
 }
 
 /**
