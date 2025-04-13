@@ -108,7 +108,7 @@ async function readTarFileNames(
   stream: ReadableStream<Uint8Array>,
 ): Promise<string[]> {
   // spell-checker: ignore Untar
-  const { UntarStream } = await import("jsr:@std/tar@0.1.1");
+  const { UntarStream } = await import("jsr:@std/tar@0.1.6/untar-stream");
   const entries: string[] = [];
 
   try {
