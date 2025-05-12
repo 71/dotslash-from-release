@@ -156,7 +156,12 @@ async function makeDotslashFile(
       });
 
       if (useDotslash) {
-        return text;
+        const programName = JSON.parse(text).name;
+
+        return {
+          program: programName,
+          contents: text,
+        };
       }
     }
   }

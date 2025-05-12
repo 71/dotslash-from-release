@@ -43,9 +43,19 @@ export async function downloadArtifact(
 
     case "tar.xz":
       readFileNames = async (stream) => {
-        const { XzReadableStream } = await import("npm:xz-decompress@0.2.2");
+        const { default: { XzReadableStream } } = await import(
+          "npm:xz-decompress@0.2.2"
+        );
 
-        return await readTarFileNames(new XzReadableStream(stream));
+        // Ensure that xz decompression operations are performed sequentially; see
+        // `xzCurrentPromise` documentation for more information.
+        const promise = xzCurrentPromise.then(() =>
+          readTarFileNames(new XzReadableStream(stream))
+        );
+
+        xzCurrentPromise = promise.then(() => {}, () => {});
+
+        return promise;
       };
       break;
 
@@ -130,6 +140,15 @@ async function readTarFileNames(
   return entries;
 }
 
+/**
+ * A promise corresponding to a xz decompression operation, used to ensure such operations are
+ * performed sequentially.
+ *
+ * Required since xz cannot decompress streams concurrently:
+ * https://github.com/httptoolkit/xz-decompress/issues/9.
+ */
+let xzCurrentPromise = Promise.resolve();
+
 // spell-checker: disable
 
 Deno.test("downloadArtifact", async () => {
@@ -190,6 +209,26 @@ Deno.test("downloadArtifact", async () => {
             "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/_rg.ps1",
             "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/rg.bash",
             "ripgrep-14.1.1-x86_64-unknown-linux-musl/README.md",
+          ],
+        },
+      );
+    }(),
+
+    async function () {
+      assertEquals(
+        await downloadArtifact(
+          "https://github.com/mstange/samply/releases/download/samply-v0.13.1/samply-aarch64-unknown-linux-gnu.tar.xz",
+          "tar.xz",
+        ),
+        {
+          blake3Digest:
+            "3775cd10d9b7618fd4a88e9de6752500af26f5dff548471a223d00cde8291a0d",
+          archiveFileNames: [
+            "samply-aarch64-unknown-linux-gnu/README.md",
+            "samply-aarch64-unknown-linux-gnu/samply",
+            "samply-aarch64-unknown-linux-gnu/RELEASES.md",
+            "samply-aarch64-unknown-linux-gnu/LICENSE-APACHE",
+            "samply-aarch64-unknown-linux-gnu/LICENSE-MIT",
           ],
         },
       );
