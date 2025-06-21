@@ -105,6 +105,15 @@ export async function downloadArtifact(
     progressPromise,
   ]);
 
+  if (archiveFileNames !== undefined) {
+    for (let i = 0; i < archiveFileNames.length; i++) {
+      if (archiveFileNames[i].startsWith("./")) {
+        // Remove leading "./" from file names, as they are not accepted by dotslash.
+        archiveFileNames[i] = archiveFileNames[i].slice(2);
+      }
+    }
+  }
+
   return {
     blake3Digest: encodeHex(digest),
     archiveFileNames,
@@ -154,84 +163,104 @@ let xzCurrentPromise = Promise.resolve();
 Deno.test("downloadArtifact", async () => {
   const { assertEquals } = await import("jsr:@std/assert@1.0.6/equals");
 
-  await Promise.all([
-    async function () {
-      assertEquals(
-        await downloadArtifact(
-          "https://github.com/protocolbuffers/protobuf/releases/download/v28.2/protoc-28.2-linux-aarch_64.zip",
-          "zip",
-        ),
-        {
-          blake3Digest:
-            "89ebfb8f46237be600c2513068fa813e9d7ff50b7e590d0d45766227196e95ea",
-          archiveFileNames: [
-            "bin/protoc",
-            "include/google/protobuf/any.proto",
-            "include/google/protobuf/api.proto",
-            "include/google/protobuf/compiler/plugin.proto",
-            "include/google/protobuf/cpp_features.proto",
-            "include/google/protobuf/descriptor.proto",
-            "include/google/protobuf/duration.proto",
-            "include/google/protobuf/empty.proto",
-            "include/google/protobuf/field_mask.proto",
-            "include/google/protobuf/java_features.proto",
-            "include/google/protobuf/source_context.proto",
-            "include/google/protobuf/struct.proto",
-            "include/google/protobuf/timestamp.proto",
-            "include/google/protobuf/type.proto",
-            "include/google/protobuf/wrappers.proto",
-            "readme.txt",
-          ],
-        },
-      );
-    }(),
+  await Promise.all(
+    [
+      async function () {
+        assertEquals(
+          await downloadArtifact(
+            "https://github.com/protocolbuffers/protobuf/releases/download/v28.2/protoc-28.2-linux-aarch_64.zip",
+            "zip",
+          ),
+          {
+            blake3Digest:
+              "89ebfb8f46237be600c2513068fa813e9d7ff50b7e590d0d45766227196e95ea",
+            archiveFileNames: [
+              "bin/protoc",
+              "include/google/protobuf/any.proto",
+              "include/google/protobuf/api.proto",
+              "include/google/protobuf/compiler/plugin.proto",
+              "include/google/protobuf/cpp_features.proto",
+              "include/google/protobuf/descriptor.proto",
+              "include/google/protobuf/duration.proto",
+              "include/google/protobuf/empty.proto",
+              "include/google/protobuf/field_mask.proto",
+              "include/google/protobuf/java_features.proto",
+              "include/google/protobuf/source_context.proto",
+              "include/google/protobuf/struct.proto",
+              "include/google/protobuf/timestamp.proto",
+              "include/google/protobuf/type.proto",
+              "include/google/protobuf/wrappers.proto",
+              "readme.txt",
+            ],
+          },
+        );
+      }(),
 
-    async function () {
-      assertEquals(
-        await downloadArtifact(
-          "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-unknown-linux-musl.tar.gz",
-          "tar.gz",
-        ),
-        {
-          blake3Digest:
-            "f73cca4e54d78c31f832c7f6e2c0b4db8b04fa3eaa747915727d570893dbee76",
-          archiveFileNames: [
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/COPYING",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/UNLICENSE",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/doc/CHANGELOG.md",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/doc/FAQ.md",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/doc/rg.1",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/doc/GUIDE.md",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/LICENSE-MIT",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/rg",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/_rg",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/rg.fish",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/_rg.ps1",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/rg.bash",
-            "ripgrep-14.1.1-x86_64-unknown-linux-musl/README.md",
-          ],
-        },
-      );
-    }(),
+      async function () {
+        assertEquals(
+          await downloadArtifact(
+            "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-unknown-linux-musl.tar.gz",
+            "tar.gz",
+          ),
+          {
+            blake3Digest:
+              "f73cca4e54d78c31f832c7f6e2c0b4db8b04fa3eaa747915727d570893dbee76",
+            archiveFileNames: [
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/COPYING",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/UNLICENSE",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/doc/CHANGELOG.md",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/doc/FAQ.md",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/doc/rg.1",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/doc/GUIDE.md",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/LICENSE-MIT",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/rg",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/_rg",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/rg.fish",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/_rg.ps1",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/complete/rg.bash",
+              "ripgrep-14.1.1-x86_64-unknown-linux-musl/README.md",
+            ],
+          },
+        );
+      }(),
 
-    async function () {
-      assertEquals(
-        await downloadArtifact(
-          "https://github.com/mstange/samply/releases/download/samply-v0.13.1/samply-aarch64-unknown-linux-gnu.tar.xz",
-          "tar.xz",
-        ),
-        {
-          blake3Digest:
-            "3775cd10d9b7618fd4a88e9de6752500af26f5dff548471a223d00cde8291a0d",
-          archiveFileNames: [
-            "samply-aarch64-unknown-linux-gnu/README.md",
-            "samply-aarch64-unknown-linux-gnu/samply",
-            "samply-aarch64-unknown-linux-gnu/RELEASES.md",
-            "samply-aarch64-unknown-linux-gnu/LICENSE-APACHE",
-            "samply-aarch64-unknown-linux-gnu/LICENSE-MIT",
-          ],
-        },
-      );
-    }(),
-  ]);
+      async function () {
+        assertEquals(
+          await downloadArtifact(
+            "https://github.com/mstange/samply/releases/download/samply-v0.13.1/samply-aarch64-unknown-linux-gnu.tar.xz",
+            "tar.xz",
+          ),
+          {
+            blake3Digest:
+              "3775cd10d9b7618fd4a88e9de6752500af26f5dff548471a223d00cde8291a0d",
+            archiveFileNames: [
+              "samply-aarch64-unknown-linux-gnu/README.md",
+              "samply-aarch64-unknown-linux-gnu/samply",
+              "samply-aarch64-unknown-linux-gnu/RELEASES.md",
+              "samply-aarch64-unknown-linux-gnu/LICENSE-APACHE",
+              "samply-aarch64-unknown-linux-gnu/LICENSE-MIT",
+            ],
+          },
+        );
+      }(),
+
+      async function () {
+        assertEquals(
+          await downloadArtifact(
+            "https://github.com/jj-vcs/jj/releases/download/v0.30.0/jj-v0.30.0-x86_64-unknown-linux-musl.tar.gz",
+            "tar.gz",
+          ),
+          {
+            blake3Digest:
+              "8398f2eddaf9443f60e5595614c91c40e42f7bdb64fcc67426b49996e44d536b",
+            archiveFileNames: [
+              "README.md",
+              "LICENSE",
+              "jj",
+            ],
+          },
+        );
+      }(),
+    ] satisfies readonly Promise<void>[],
+  );
 });
