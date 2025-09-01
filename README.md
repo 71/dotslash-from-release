@@ -13,14 +13,14 @@ with `./main.ts`.
 - Run with explicit permissions:
   ```sh
   $ deno run                                                            \
-    --allow-net=github.com,api.github.com,objects.githubusercontent.com \
+    --allow-net=github.com,api.github.com,release-assets.githubusercontent.com \
     main.ts
   ```
 
 - Run without cloning:
   ```sh
   $ deno run                                                            \
-    --allow-net=github.com,api.github.com,objects.githubusercontent.com \
+    --allow-net=github.com,api.github.com,release-assets.githubusercontent.com \
     https://github.com/71/dotslash-from-release/raw/refs/heads/main/main.ts
   ```
 
@@ -28,7 +28,7 @@ with `./main.ts`.
   ```sh
   $ DENO_DIR=/tmp/deno-cache                                                                             \
     dotslash <(curl -fsSL https://github.com/71/dotslash-from-release/raw/refs/heads/main/examples/deno) \
-    run --allow-net=github.com,api.github.com,objects.githubusercontent.com                              \
+    run --allow-net=github.com,api.github.com,release-assets.githubusercontent.com                              \
     https://github.com/71/dotslash-from-release/raw/refs/heads/main/main.ts
   ```
 

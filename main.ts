@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-net=github.com,api.github.com,objects.githubusercontent.com --allow-write
+#!/usr/bin/env -S deno run --allow-net=github.com,api.github.com,release-assets.githubusercontent.com --allow-write
 import { Command, EnumType } from "jsr:@cliffy/command@1.0.0-rc.7";
 import {
   Checkbox,
