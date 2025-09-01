@@ -65,6 +65,7 @@ const artifactRe = (function () {
 
   return new RegExp(
     `^${nameRe}([-_]${versionRe})?[-_]${platformRe}(\\.exe)?(\\.${formatRe})?$`,
+    "i",
   );
 })();
 
@@ -93,20 +94,20 @@ export function parseAssetName(fileName: string): AssetInfo {
 
   const { name, version, os1, os2, arch1, arch2, platform, format } = match
     .groups!;
-  const os = os1 ?? os2;
-  const arch = arch1 ?? arch2;
+  const os = (os1 ?? os2)?.toLowerCase();
+  const arch = (arch1 ?? arch2)?.toLowerCase();
   const result: AssetInfo = {
     name,
     platform: platform === undefined
       ? `${osNames[os]}-${archNames[arch]}` as DotslashPlatform
-      : additionalPlatforms[platform]!,
+      : additionalPlatforms[platform.toLowerCase()]!,
   };
 
   if (version !== undefined) {
     result.version = version;
   }
   if (format !== undefined) {
-    result.format = format as DotslashArtifactFormat;
+    result.format = format.toLowerCase() as DotslashArtifactFormat;
   }
 
   return result;
@@ -349,6 +350,20 @@ Deno.test("parseArtifactName", async () => {
   assertArtifactParsed("bat-v0.25.0-x86_64-unknown-linux-gnu.tar.gz", {
     name: "bat",
     version: "0.25.0",
+    platform: "linux-x86_64",
+    format: "tar.gz",
+  });
+
+  // https://github.com/rr-debugger/rr/releases/tag/5.9.0
+  assertArtifactParsed("rr-5.9.0-Linux-aarch64.tar.gz", {
+    name: "rr",
+    version: "5.9.0",
+    platform: "linux-aarch64",
+    format: "tar.gz",
+  });
+  assertArtifactParsed("rr-5.9.0-Linux-x86_64.tar.gz", {
+    name: "rr",
+    version: "5.9.0",
     platform: "linux-x86_64",
     format: "tar.gz",
   });
