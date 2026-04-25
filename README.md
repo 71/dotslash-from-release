@@ -93,6 +93,13 @@ $ examples/rg --version | head -1
 ripgrep 14.1.1 (rev 4649aa9700)
 ```
 
+You may also use `-o, --output <output>` to write to a file and make it
+executable automatically:
+
+```sh
+./main.ts 71 ifctc --output ~/.local/bin
+```
+
 ## Installation
 
 If you want to install `dotslash-from-release` instead of using it with
